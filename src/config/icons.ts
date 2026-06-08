@@ -1,0 +1,45 @@
+import {
+    Bell, CheckCircle2, Laptop, Moon, Sun, LayoutDashboard, BookCheck, Gem, Images, User,
+    HelpCircle, MessageCircle, Contact, Calendar, ShoppingBasket, Users, Settings,
+    TicketPercent, MessageSquareText, UserRoundCheck, Eye, Edit, Trash2,
+    ChevronsRight, ChevronsLeft, ChevronLeft, ChevronRight, Plus,
+    Home, ShoppingBag, FileText, Layers, Store
+} from 'lucide-react';
+
+export const icons = {
+    dashboard: LayoutDashboard,
+    bookCheck: BookCheck,
+    gem: Gem,
+    images: Images,
+    user: User,
+    helpCircle: HelpCircle,
+    messageCircle: MessageCircle,
+    contact: Contact,
+    calendar: Calendar,
+    shoppingBasket: ShoppingBasket,
+    users: Users,
+    settings: Settings,
+    laptop: Laptop,
+    moon: Moon,
+    sun: Sun,
+    bell: Bell,
+    checkCircle2: CheckCircle2,
+    // Iconos del CRM
+    ticketPercent: TicketPercent,
+    messageSquareText: MessageSquareText,
+    userRoundCheck: UserRoundCheck,
+    eye: Eye,
+    edit: Edit,
+    trash2: Trash2,
+    chevronLeft: ChevronLeft,
+    chevronRight: ChevronRight,
+    chevronsLeft: ChevronsLeft,
+    chevronsRight: ChevronsRight,
+    plus: Plus,
+    // Iconos para navegación de usuario común
+    home: Home,
+    shoppingBag: ShoppingBag,
+    fileText: FileText,
+    layers: Layers,
+    store: Store,
+}
