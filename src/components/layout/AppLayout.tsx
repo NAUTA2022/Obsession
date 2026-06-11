@@ -31,6 +31,7 @@ const FULL_BLEED_ROUTES = ['become-creator', 'become-seller', 'onboarding'];
 export default function AppLayout() {
   const { pathname } = useLocation();
   const isFullBleed = FULL_BLEED_ROUTES.some((r) => pathname.includes(r));
+  const isDocumentation = pathname.includes('documentation');
   const user = useAuthStore((s) => s.user);
   const openSidebar = useUIStore((s) => s.openSidebar);
 
@@ -40,28 +41,28 @@ export default function AppLayout() {
         <Navbar />
 
         <div className="flex flex-1 overflow-hidden min-h-0">
-          <Sidebar />
+          {!isDocumentation && <Sidebar />}
 
           <div className="flex flex-1 flex-col overflow-hidden min-w-0">
             <main
               className={
-                isFullBleed
+                isFullBleed || isDocumentation
                   ? 'w-full flex-1 overflow-y-auto'
                   : 'w-full flex-1 overflow-y-auto p-4 pb-24 md:p-6 md:pb-4'
               }
             >
-              {!isFullBleed && <BecomeCreatorBanner />}
+              {!isFullBleed && !isDocumentation && <BecomeCreatorBanner />}
               <AnimatePresence mode="wait" initial={false}>
                 <MotionPage key={pathname}>
                   <Outlet />
                 </MotionPage>
               </AnimatePresence>
             </main>
-            <Footer />
+            {!isDocumentation && <Footer />}
           </div>
         </div>
 
-        <MobileBottomNav />
+        {!isDocumentation && <MobileBottomNav />}
 
       </div>
     </NotificationsProvider>

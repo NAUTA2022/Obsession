@@ -1,17 +1,196 @@
-import { NavLink } from 'react-router-dom';
-import { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, ChevronDown, X } from 'lucide-react';
+import { LogOut, ChevronDown, X, ArrowRight } from 'lucide-react';
 import { getNavigation } from '../../constants/navigationByRole';
 import type { NavItem } from '../../constants/navigationByRole';
 import { useUIStore } from '../../store/ui';
 import { useAuthStore } from '../../store/auth';
 import { usePermissions } from '../../hooks/usePermissions';
 import { ROUTES } from '../../constants/routes';
+import { USER_ROLES } from '../../types/auth';
 import SidebarTeams from './SidebarTeams';
 import SidebarCreatorsList from './SidebarCreatorsList';
 import { useLogout } from '../../hooks/useLogout';
 import Avatar from '../ui/Avatar';
+
+/* ─── Promo banners por rol ─── */
+type BannerDef = {
+  id: string;
+  gradient: string;
+  badge: string;
+  title: string;
+  desc: string;
+  cta: string;
+  route: string;
+  emoji: string;
+};
+
+const BANNERS_CUSTOMER: BannerDef[] = [
+  {
+    id: 'become-seller',
+    gradient: 'from-violet-600 via-purple-600 to-indigo-700',
+    badge: '💼 Nuevo rol',
+    title: 'Conviértete en\nVendedor',
+    desc: 'Genera comisiones vendiendo para las mejores creadoras.',
+    cta: 'Comenzar ahora',
+    route: ROUTES['become-seller'],
+    emoji: '🚀',
+  },
+  {
+    id: 'become-creator',
+    gradient: 'from-rose-500 via-pink-600 to-fuchsia-700',
+    badge: '✨ Destacado',
+    title: 'Conviértete en\nCreadora',
+    desc: 'Monetiza tu contenido y conecta con tu audiencia.',
+    cta: 'Comenzar ahora',
+    route: ROUTES['become-creator'],
+    emoji: '🌟',
+  },
+];
+
+const BANNERS_CREATOR: BannerDef[] = [
+  {
+    id: 'ai-agent',
+    gradient: 'from-cyan-500 via-sky-600 to-blue-700',
+    badge: '🤖 IA Premium',
+    title: 'Agente IA para\ntus mensajes',
+    desc: 'Con la membresía, un agente responde y convierte por ti 24/7.',
+    cta: 'Ver membresía',
+    route: ROUTES['membership'],
+    emoji: '🧠',
+  },
+  {
+    id: 'find-sellers',
+    gradient: 'from-emerald-500 via-teal-600 to-cyan-700',
+    badge: '🤝 Colabora',
+    title: 'Encuentra\nVendedores',
+    desc: 'Conecta con vendedores que impulsen tus ventas.',
+    cta: 'Buscar ahora',
+    route: ROUTES['creator-sellers'],
+    emoji: '🔍',
+  },
+];
+
+const BANNERS_SELLER: BannerDef[] = [
+  {
+    id: 'seller-membership',
+    gradient: 'from-amber-500 via-orange-500 to-rose-600',
+    badge: '⚡ Pro',
+    title: 'Potencia tu\ngestión con IA',
+    desc: 'Membresía Pro: agentes IA que convierten clientes y gestionan creadoras.',
+    cta: 'Ver membresía',
+    route: ROUTES['seller-ai-sales'],
+    emoji: '💎',
+  },
+  {
+    id: 'discover-creators',
+    gradient: 'from-fuchsia-500 via-purple-600 to-violet-700',
+    badge: '🌟 Descubrir',
+    title: 'Descubre\nCreadoras',
+    desc: 'Explora el catálogo de creadoras y solicita colaboración.',
+    cta: 'Explorar',
+    route: ROUTES['seller-discover'],
+    emoji: '🎯',
+  },
+];
+
+function getBannersForRole(role?: string): BannerDef[] {
+  if (role === USER_ROLES.CREATOR)  return BANNERS_CREATOR;
+  if (role === USER_ROLES.VENDEDOR || role === USER_ROLES.MODERATOR) return BANNERS_SELLER;
+  return BANNERS_CUSTOMER; // customer o sin rol
+}
+
+function SidebarPromoBanner({ role }: { role?: string }) {
+  const banners = getBannersForRole(role);
+  const [idx, setIdx] = useState(0);
+  const [dir, setDir] = useState(1);
+  const navigate = useNavigate();
+
+  // Reset idx when banners list changes (role switch)
+  useEffect(() => { setIdx(0); }, [role]);
+
+  useEffect(() => {
+    if (banners.length <= 1) return;
+    const t = setInterval(() => {
+      setDir(1);
+      setIdx(i => (i + 1) % banners.length);
+    }, 5500);
+    return () => clearInterval(t);
+  }, [banners]);
+
+  const go = (next: number) => {
+    setDir(next > idx ? 1 : -1);
+    setIdx(next);
+  };
+
+  const b = banners[idx];
+  if (!b) return null;
+
+  return (
+    <div className="shrink-0 px-1 py-3">
+      <div className="overflow-hidden rounded-2xl">
+        <AnimatePresence mode="wait" custom={dir}>
+          <motion.div
+            key={b.id}
+            custom={dir}
+            initial={{ x: dir * 60, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: dir * -60, opacity: 0 }}
+            transition={{ duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className={`relative w-full bg-gradient-to-br ${b.gradient} p-5 flex flex-col gap-2 overflow-hidden select-none`}
+          >
+            {/* decorative circles */}
+            <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full opacity-20 bg-white pointer-events-none" />
+            <div className="absolute bottom-2 -right-4 w-16 h-16 rounded-full opacity-15 bg-white pointer-events-none" />
+            <div className="absolute top-10 -left-5 w-16 h-16 rounded-full opacity-10 bg-white pointer-events-none" />
+
+            {/* badge */}
+            <span className="relative z-10 self-start text-[10px] font-bold text-white/90 bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-full">
+              {b.badge}
+            </span>
+
+            {/* emoji */}
+            <div className="relative z-10 text-4xl leading-none">{b.emoji}</div>
+
+            {/* title */}
+            <h3 className="relative z-10 text-base font-black text-white leading-tight whitespace-pre-line">
+              {b.title}
+            </h3>
+
+            {/* desc */}
+            <p className="relative z-10 text-xs text-white/80 leading-relaxed">
+              {b.desc}
+            </p>
+
+            {/* CTA */}
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate(b.route)}
+              className="relative z-10 mt-1 flex items-center justify-center gap-1.5 w-full bg-white/25 hover:bg-white/35 backdrop-blur-sm text-white text-xs font-bold py-2.5 rounded-xl transition-colors"
+            >
+              {b.cta} <ArrowRight className="w-3.5 h-3.5" />
+            </motion.button>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* dots */}
+      {banners.length > 1 && (
+        <div className="flex items-center justify-center gap-1.5 mt-2.5">
+          {banners.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => go(i)}
+              className={`rounded-full transition-all ${i === idx ? 'w-5 h-1.5 bg-[#6850E8]' : 'w-1.5 h-1.5 bg-gray-300 dark:bg-white/20'}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 
 export default function Sidebar() {
@@ -227,8 +406,18 @@ export default function Sidebar() {
                 </ul>
               </div>
             )}
+
+            {/* ── Promo banner creator — scrollea con el contenido ── */}
+            {!collapsed && user?.role === USER_ROLES.CREATOR && (
+              <SidebarPromoBanner role={user?.role} />
+            )}
           </div>
         </nav>
+
+        {/* ── Promo banner customer/seller — pegado al bottom, antes del logout ── */}
+        {!collapsed && (user?.role === USER_ROLES.CUSTOMER || user?.role === USER_ROLES.VENDEDOR || user?.role === USER_ROLES.MODERATOR) && (
+          <SidebarPromoBanner role={user?.role} />
+        )}
 
         {/* ── Bottom: settings + logout ── */}
         <div className="shrink-0 border-t border-gray-200/70 dark:border-white/[0.06] pt-2 pb-3 space-y-0.5">

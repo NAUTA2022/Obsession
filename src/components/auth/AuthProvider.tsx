@@ -23,7 +23,7 @@ const DEV_MOCK_USER: User = {
   email: "andresquinteros2017@gmail.com",
   firstName: "Dev",
   lastName: "User",
-  role: "creator",           // rol por defecto: cliente
+  role: "customer",          // siempre arranca como cliente al recargar
   isEmailVerified: true,
   creatorOnboarded: true,    // permite cambiar a creadora
   sellerOnboarded: true,     // permite cambiar a vendedor
@@ -60,8 +60,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           const storedAccessToken = localStorage.getItem("accessToken");
           const storedRefreshToken = localStorage.getItem("refreshToken");
           const storedExpiresAt = localStorage.getItem("expiresAt");
+          // Siempre arrancar como cliente al recargar (si tiene roles adicionales)
+          const userData = (response.data.creatorOnboarded || response.data.sellerOnboarded)
+            ? { ...response.data, role: 'customer' as const }
+            : response.data;
           useAuthStore.setState({
-            user: response.data,
+            user: userData,
             isAuthenticated: true,
             isLoading: false,
             error: null,

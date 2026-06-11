@@ -38,6 +38,7 @@ const PRIMARY: NavItem[] = [
   { label: 'Creadoras/as', path: ROUTES['customer-creators'], icon: icons.home, permission: PERMISSIONS.CUSTOMER_CREATORS_BROWSE },
   // Seller
   { label: 'Mis Creadoras', path: ROUTES['seller-creators'], icon: icons.users, permission: PERMISSIONS.SELLER_CREATORS_VIEW, customExpandable: true, expandType: 'creators-list' },
+  { label: 'Descubrir Creadoras', path: ROUTES['seller-discover'], icon: icons.compass, permission: PERMISSIONS.SELLER_CREATORS_VIEW },
   // Creator
   { label: 'Descubrir vendedores', path: ROUTES['creator-sellers'], icon: icons.store, permission: PERMISSIONS.CREATOR_SELLERS_MANAGE },
   { label: 'Mis vendedores', path: ROUTES['creator-collaborations'], icon: icons.users, permission: PERMISSIONS.CREATOR_SELLERS_MANAGE },
@@ -46,7 +47,6 @@ const PRIMARY: NavItem[] = [
   { label: 'Conversaciones', path: ROUTES.messages, icon: icons.messageCircle, permission: PERMISSIONS.CREATOR_MESSAGES_ACCESS },
   // Customer
   { label: 'Mis compras', path: ROUTES['customer-purchases'], icon: icons.shoppingBag, permission: PERMISSIONS.CUSTOMER_PURCHASES_VIEW },
-  { label: 'Planes', path: ROUTES['customer-planes'], icon: icons.gem, permission: PERMISSIONS.CUSTOMER_PURCHASES_VIEW },
   // Seller
   { label: 'IA Comercial', path: ROUTES['seller-ai-sales'], icon: icons.helpCircle, permission: PERMISSIONS.SELLER_AI_USE },
   { label: 'Comisiones', path: ROUTES['seller-commissions'], icon: icons.ticketPercent, permission: PERMISSIONS.SELLER_COMMISSIONS_VIEW },

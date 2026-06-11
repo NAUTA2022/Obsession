@@ -1,19 +1,74 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Menu, BookOpen, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '../../store/ui';
 import { usePageTitle } from '../../hooks/usePageTitle';
+import { useAuthStore } from '../../store/auth';
 import { images } from '../../config/assets';
 import ThemeToggle from '../ui/ThemeToggle';
 import LanguageSelector from '../ui/LanguageSelector';
 import NotificationsMenu from '../ui/NotificationsMenu';
 import UserMenu from '../ui/UserMenu';
 
+const HINT_KEY = 'obsession_role_hint_seen';
+
+function RoleHintBubble({ onDismiss }: { onDismiss: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.85, y: 6 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.85, y: 6 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+      className="absolute top-12 right-0 z-50 flex flex-col items-end pointer-events-none"
+      style={{ minWidth: 200 }}
+    >
+      {/* flecha apuntando arriba-derecha hacia el avatar */}
+      <div className="mr-3 w-0 h-0"
+        style={{
+          borderLeft: '7px solid transparent',
+          borderRight: '7px solid transparent',
+          borderBottom: '8px solid #6850E8',
+        }}
+      />
+      <div className="relative bg-[#6850E8] text-white text-xs font-semibold rounded-2xl rounded-tr-sm px-4 py-3 shadow-xl shadow-[#6850E8]/30 pointer-events-auto max-w-[210px]">
+        {/* pulso */}
+        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-300 opacity-75" />
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-violet-400" />
+        </span>
+
+        <p className="leading-snug">
+          🎉 ¡Tenés varios roles! Tocá tu foto de perfil para cambiar de modo.
+        </p>
+
+        <button
+          onClick={onDismiss}
+          className="mt-2 text-[10px] text-white/60 hover:text-white/90 transition-colors underline underline-offset-2"
+        >
+          Entendido
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const user = useAuthStore(s => s.user);
+
+  // Mostrar hint solo si tiene roles adicionales y no lo descartó
+  const hasMultipleRoles = !!(user?.creatorOnboarded || user?.sellerOnboarded);
+  const [showHint, setShowHint] = useState(() =>
+    hasMultipleRoles && localStorage.getItem(HINT_KEY) !== 'true'
+  );
+  const dismissHint = () => {
+    localStorage.setItem(HINT_KEY, 'true');
+    setShowHint(false);
+  };
 
   const toggleSidebar          = useUIStore((s) => s.toggleSidebar);
   const toggleSidebarCollapsed = useUIStore((s) => s.toggleSidebarCollapsed);
@@ -134,7 +189,12 @@ export default function Navbar() {
           </button>
 
           <NotificationsMenu />
-          <UserMenu />
+          <div className="relative" onClick={dismissHint}>
+            <UserMenu />
+            <AnimatePresence>
+              {showHint && <RoleHintBubble onDismiss={dismissHint} />}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </header>

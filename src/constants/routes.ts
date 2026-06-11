@@ -114,6 +114,7 @@ export const ROUTES = {
   'seller-commissions': '/seller/commissions',
   'seller-ai-sales': '/seller/ai-sales',
   'seller-analytics': '/seller/analytics',
+  'seller-discover': '/seller/discover',
   'seller-profile': '/seller/profile',
   'public-seller-profile': '/vendedor/:username',
 

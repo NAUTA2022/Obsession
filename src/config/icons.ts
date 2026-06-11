@@ -3,7 +3,7 @@ import {
     HelpCircle, MessageCircle, Contact, Calendar, ShoppingBasket, Users, Settings,
     TicketPercent, MessageSquareText, UserRoundCheck, Eye, Edit, Trash2,
     ChevronsRight, ChevronsLeft, ChevronLeft, ChevronRight, Plus,
-    Home, ShoppingBag, FileText, Layers, Store
+    Home, ShoppingBag, FileText, Layers, Store, Compass
 } from 'lucide-react';
 
 export const icons = {
@@ -42,4 +42,5 @@ export const icons = {
     fileText: FileText,
     layers: Layers,
     store: Store,
+    compass: Compass,
 }

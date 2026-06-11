@@ -68,6 +68,8 @@ import SellerCommissionsPage from "./pages/SellerCommissionsPage";
 import SellerAIPage from "./pages/SellerAIPage";
 import SellerAnalyticsPage from "./pages/SellerAnalyticsPage";
 import PublicSellerProfilePage from "./pages/PublicSellerProfilePage";
+import DiscoverCreatorsPage from "./pages/DiscoverCreatorsPage";
+import DocumentationPage from "./pages/DocumentationPage";
 
 /** Redirige a la página principal del rol del usuario. */
 function RoleBasedRedirect() {
@@ -153,6 +155,7 @@ export default function App() {
                 <Route path="profile" element={<PerfilPage />} />
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="notifications" element={<NotificationsPage />} />
+                <Route path="documentation" element={<DocumentationPage />} />
                 <Route path="messages" element={<MessagesRedirect />} />
 
                 {/* ----- Onboarding ----- */}
@@ -197,6 +200,7 @@ export default function App() {
                 <Route path="seller" element={<SellerLayout />}>
                   <Route path="dashboard" element={<SellerDashboardPage />} />
                   <Route path="creators" element={<CollaborationsPage />} />
+                  <Route path="discover" element={<DiscoverCreatorsPage />} />
                   {/* Vista individual por creadora: /seller/creator/:username/* */}
                   <Route path="creator/:username/*" element={<SellerCreatorViewPage />} />
                   <Route path="commissions" element={<SellerCommissionsPage />} />
